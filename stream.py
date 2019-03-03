@@ -15,8 +15,7 @@ SECRET_KEY = ''# add secret_key from twitter account
 
 ACCESS_TOKEN = ''# add access token
 ACCESS_TOKEN_SECRET = ''
-
-fw = open('CS172_data.json', 'a')
+fw = open('CS_data.json', 'a')
 
 #This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
@@ -40,15 +39,13 @@ class StdOutListener(StreamListener):
                     hash_tags.append(item.get('text'))
                 parsed_tweet.update({'hash_tags': hash_tags})
 
-                #parsed_tweet.update({'created_at': status.created_at})
                 parsed_tweet.update({'tweet_id': status.id})  
                 parsed_tweet.update({'retweet_count': status.retweet_count})
-                parsed_tweet.update({'favorite_count': status.favorite_count})                    
-                parsed_tweet.update({'Coordinates': status.coordinates})
-                #order_parsed_tweet = collections.OrderedDict(sorted(parsed_tweet.items()))
+                parsed_tweet.update({'favorite_count': status.favorite_count})                   
+                parsed_tweet.update({'Location': status.user.location})
                 print(parsed_tweet)
                 fw.write(json.dumps(parsed_tweet))
-                fw.write("\n\n")
+                fw.write("\n")
 
         return True
 
@@ -66,5 +63,5 @@ if __name__ == '__main__':
     stream = Stream(auth, l, tweet_mode = 'extended')
     
     stream.filter(languages=["en"], track=['the','a','an'])
-  #  stream.filter(languages=["en"], track=['the','a','an'])
+
 
