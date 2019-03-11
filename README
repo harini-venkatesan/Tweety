@@ -1,3 +1,8 @@
 Andrea Cruz Castillo
 Harini Venkatesan
 Sayed Thurab
+
+
+We streamed tweets and collected 1GB worth of tweets with location of the tweet, text, hashtags, time created and username as parameters. We then ran ElasticSearch on the collected tweets to create an index. 
+
+Our interface primarily runs on a web browser that takes query terms from the user and the location of the user and returns the top 100 tweets with the query. We then display the tweets on a world map using a heat map. The user can either search for tweets with the query and their location as a parameter, or search for the tweets worldwide and we display where it was tweeted from
