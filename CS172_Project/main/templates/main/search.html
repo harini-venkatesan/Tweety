@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>CS172 Project</title>
+        <meta charset="utf-8" />
+         {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}" type = "text/css"/>
+        <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+                
+        <style type="text/css">
+            html,
+            body {
+                height:100%
+            }
+            #footer {
+                text-align: center;
+                position:absolute;
+                bottom:0;
+                width:100%;
+                height:40px;
+            }
+            #logo{ float:left}
+            .search-box{
+                margin: auto auto;
+                display: block;
+            }
+
+        </style>
+    </head>
+
+    <body class="body" style="background-color:#EAE8E8">
+        <div class="nav">
+            <img src="{% static 'main/img/twitter-logo.jpg' %}" style='max-height:50px;' id="logo">
+            <div class="search-box">
+                <form>
+                    <form method="GET" action="{% url 'main:search' %}">
+                            <input name="q" value="{{request.GET.q}}" placeholder="Search Tweets">
+                            <button type="submit"> Search </button>
+                    </form>
+                </form>
+            </div>
+        </div>
+
+        <div class="row" style="background-color:#2196f3" id="query">
+            <div class="container">
+                <h3> Query </h3> <br>
+            </div>
+        </div>
+        <div class="row" style="background-color:#ffffff">
+            <div class="container">
+                <ul id="nav">
+                    <button type="submit"> <a href="..">Home</a> </button>
+                    <button type="submit"> <a href="#">Near Me</a> </button>
+                    <button type="submit"> <a href="#">World Wide</a> </button>
+                    <button type="submit"> <a href="#">Most Recent</a> </button>
+                </ul>
+            </div>
+        </div>
+
+        
+        <div class="row">
+            <div class="col s6">
+                <div class="card white">
+                <div class="card-content black-text">
+                        {% block content%}
+                        {% if results != '' %}
+                            {% for t in results %}
+                    <p> User: {{t.user_name}} </p> 
+                    <p> Tweet: {{t.tweet_text}} </p>
+                    {% endfor %}
+        {% endif %}
+        {% endblock%}
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <ul class="pagination">
+                <li class="disabled"><a href="#!"></a></li>
+                <li class="active"><a href="#!">1</a></li>
+                <li class="waves-effect"><a href="#!">2</a></li>
+                <li class="waves-effect"><a href="#!">3</a></li>
+                <li class="waves-effect"><a href="#!">4</a></li>
+                <li class="waves-effect"><a href="#!">5</a></li>
+                <li class="waves-effect"><a href="#!"></a></li>
+            </ul>
+        </div>
+    </body>
+    <div id="footer">
+            <div class="container">
+                <a class="grey-text text-lighten-4 right" href="#!">
+                    Created By: Andrea | Harini | Sayed
+                </a> 
+            </div>
+    </div>
+</html>
