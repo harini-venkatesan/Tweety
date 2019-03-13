@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
+import json
 
 # Create your views here.
 def homepage(request):
@@ -27,6 +28,6 @@ def search(request):
         res = es.search(index="tweet-index", q=query)
     results = []
     for hit in res['hits']['hits']:
-        results.append(hit["_source"])
+        results.append(json.loads(hit["_source"]['doc']['word']))
     context = {'results': results, 'query': query}
     return render(request, template, context)
