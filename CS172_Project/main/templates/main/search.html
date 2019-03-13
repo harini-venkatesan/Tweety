@@ -44,7 +44,7 @@
 
         <div class="row" style="background-color:#2196f3" id="query">
             <div class="container">
-                <h3> Query </h3> <br>
+                <h3> {{query}} </h3> <br>
             </div>
         </div>
         <div class="row" style="background-color:#ffffff">
@@ -64,11 +64,13 @@
                 <div class="card white">
                 <div class="card-content black-text">
                         {% block content%}
-                        {% if results != '' %}
+                       {% if results != '' %}
                             {% for t in results %}
-                    <p> User: {{t.user_name}} </p> 
-                    <p> Tweet: {{t.tweet_text}} </p>
+                                <p>{{t}}</p>
+                                <p> User: {{t.user_name}} </p> 
+                                <p> Tweet: {{t.tweet_text}} </p>
                     {% endfor %}
+                    
         {% endif %}
         {% endblock%}
                 </div>

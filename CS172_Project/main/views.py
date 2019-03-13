@@ -1,19 +1,32 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.template import loader
-from .models import Tweets
-from django.db.models import Q
+from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk
 
 # Create your views here.
 def homepage(request):
     return render(request = request, template_name = "main/home.html")
 
 def search(request):
+    # connect to elastic search here
+    # create request
+    # decode request
+    # render it to HTML
     template = 'main/search.html'
-    results = ''
+    es = Elasticsearch()
+    with open('CS_data.json', 'r') as f:
+        def gen():
+            for line in f:
+                yield {
+                    "_index": "tweet-index",
+                    "_type": "doc",
+                    "doc": {"word": line},
+                }
+        bulk(es, gen())
     if 'q' in request.GET:
         query = request.GET['q']
-        results = Tweets.objects.filter(tweet_text__icontains=query)
-    context = {'results': results}
+        res = es.search(index="tweet-index", q=query)
+    results = []
+    for hit in res['hits']['hits']:
+        results.append(hit["_source"])
+    context = {'results': results, 'query': query}
     return render(request, template, context)
-    #return render(request =request, template_name="main/search.html" )
