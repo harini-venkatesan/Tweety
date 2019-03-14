@@ -26,3 +26,12 @@ Note: this code runs on python 3.7.1
 	>python manage.py runserver
 3) To stop the server run
 	>CTRL+Break
+
+Elasticsearch notes:
+	first prepare json file by executing json_to_es.py then 
+	to bulk load data, on command line  
+	   -move to directory where output file from json_to_es.py (tweets.json) is
+	   -curl -X POST "localhost:9200/_bulk" -H "Content-Type: application/json" --data-binary @tweets.json
+	   -open browser at http://localhost:9200/_cat/indices
+	   -should display "yellow open tweets yKYje4hBRs6-moP87ZTUDA 5 1 104 0 111.6kb 111.6kb"
+
