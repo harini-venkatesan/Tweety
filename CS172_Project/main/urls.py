@@ -21,7 +21,6 @@ urlpatterns = [
     path("", views.homepage, name="homepage"),
    # path("search/", views.search, name="search"),
     path("search/", views.search_tweet, name="search"),
-    path("nearme/", views.near_me, name ="nearme" ),
     path("worldwide/", views.world_wide, name ="worldwide" ),
-    path("mostrecent/", views.most_recent, name ="mostrecent" ),
+    path("search_sentiment/", views.search_sentiment, name ="search_sentiment" ),
 ]

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>CS172 Project</title>
+        <meta charset="utf-8" />
+            {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}" type = "text/css"/>
+        <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+                
+        <style type="text/css">
+            body {
+                text-align: center;
+                height:100%
+            }
+            #footer {
+                position:relative;
+                bottom:0;
+                width:100%;
+                height:40px;
+            }
+        </style>
+    </head>
+    <body class="body" style="background-color:#b5d7f7ef">
+            <div class="row" style="background-color:#ffffff">
+                <div class="container">
+                    <ul id="nav">
+                        <button type="submit"> <a href="..">Home</a> </button>
+                        <button type="submit"> <a href="../search/">Search</a> </button>
+                        <button type="submit"> <a href="../worldwide/">worldwide</a> </button>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                {% block content%}
+                    <div class="col s4">
+                        <h3> Negative </h3>
+                        {% for n in negative %}
+                            <div class="container" style="background-color:#ffffff">
+                                <p><span><strong>@{{n.user_name}}</strong></span> </p>
+                                <p>{{n.tweet_text | safe}}</p>
+                                <p><a href="#" >#{{n.hash_tags}} </a></p>
+                                {% if n.Location != None %}
+                                    <p>{{n.Location}}</p>
+                                {% endif %}
+                            </div> 
+                        {% endfor %}
+                    </div>
+                    <div class="col s4">
+                        <h3> Neutral </h3>
+                        {% for nl in neutral %}
+                            <div class="container" style="background-color:#ffffff">
+                                <p><span><strong>@{{nl.user_name}}</strong></span> </p>
+                                <p>{{nl.tweet_text | safe}}</p>
+                                <p><a href="#" >#{{nl.hash_tags}} </a></p>
+                                {% if nl.Location != None %}
+                                    <p>{{nl.Location}}</p>
+                                {% endif %}
+                            </div> 
+                        {% endfor %}
+                    </div>
+                    <div class="col s4">
+                        <h3> Positive </h3>
+                        {% for p in positive %}
+                            <div class="container" style="background-color:#ffffff">
+                                <p><span><strong>@{{p.user_name}}</strong></span> </p>
+                                <p>{{p.tweet_text | safe}}</p>
+                                <p><a href="#" >#{{p.hash_tags}} </a></p>
+                                {% if p.Location != None %}
+                                    <p>{{p.Location}}</p>
+                                {% endif %}
+                            </div> 
+                        {% endfor %}}
+                    </div>
+                {% endblock %}
+            </div>
+
+    </body>
+
+</html>
