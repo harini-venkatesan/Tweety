@@ -4,6 +4,14 @@ Tweety is our CS172 final project that runs on a web browser that takes query te
 
 ## Installation
 
+To run Tweepy streamer: 
+
+1. Create a twitter account and apply for [twitter developer account](https://developer.twitter.com/en/apply/user)
+2. After creating an account, find your api key, secret key, access token, and secret token under Keys and Access Tokens and add to [stream.py](https://github.com/CS172-UCR/finalproject-tweety/blob/master/stream.py)
+3. `sudo pip install tweepy` to install tweepy 
+4. Run `python stream.py`
+5. Collected tweets will be stored in a file named `CS_data.json'
+
 To run the web interface files, use python 3.7.1, Django 2.1.7 and Elasticsearch-dsl 6.3.1. 
 
 To install Django and ElasticSearch
