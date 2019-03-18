@@ -1,6 +1,6 @@
 # Tweety - Twitter streamer and geo-located query search
 
-Tweety is our CS172 final project that runs on a web browser that takes query terms from the user and the location of the user and returns the top tweets with the query. We stream tweets using [Tweepy](http://www.tweepy.org/) and perform indexing using [ElasticSearch](https://www.elastic.co/). We have also implemented sentiment analysis using [TextBlob](https://textblob.readthedocs.io/en/dev/). We then display the tweets on a world map using folium.
+Tweety is our CS172 final project that runs on a web browser that takes query terms from the user and returns the top tweets with the query. We stream tweets using [Tweepy](http://www.tweepy.org/) and perform indexing using [ElasticSearch](https://www.elastic.co/). We have also implemented sentiment analysis using [TextBlob](https://textblob.readthedocs.io/en/dev/). We then display the tweets on a world map using folium.
 
 ## Installation
 
@@ -12,14 +12,18 @@ To run Tweepy streamer:
 4. Run `python stream.py`
 5. Collected tweets will be stored in a file named `CS_data.json'
 
-To run the web interface files, use python 3.7.1, Django 2.1.7 and Elasticsearch-dsl 6.3.1. 
+To run the web interface files, use python 3.7.1, Django 2.1.7, Elasticsearch-dsl 6.3.1, textblob 0.15.3, and folium 0.8.2.
 
 To install Django and ElasticSearch
 
 ```bash
 pip3 install Django 
 pip3 install elasticsearch-dsl
+pip3 install folium
+pip install -U textblob
+python3 -m textblob.download_corpora
 ```
+Note: Depending on the system you are using, you may need a different variation of pip3 and python3 or simply pip and python to run the installs. Make sure the versions you download are the same as the ones listed above. To view the list run ```bash pip list```
 
 To run the sever: 
 
@@ -29,7 +33,7 @@ To run the sever:
 cd CS172_Project
 ```
 
-Note: there are 2 directories with the same name, one
+Note: Django creates two directories with the same name by default, one
 	      	is a subdirectory. You must be in the first CS172_Project
 	      	directory such that you can see the following files:
 	      	manage.py, db.sqlite3, main/, _pycache_/,CS172_Project
@@ -37,12 +41,12 @@ Note: there are 2 directories with the same name, one
 2. Run the server: 
 
 ```python
-python3 manage,py runserver
+python3 manage.py runserver
 ```
 
 3. To stop the server: 
 ```bash
-CTRL+C
+CTRL+Break
 ```
 
 There are multiple ways to run ElasticSeach, however it must always remain running in the background of this program. To download the package 
@@ -55,10 +59,11 @@ There are multiple ways to run ElasticSeach, however it must always remain runni
 bin/elasticsearch
 ``` 
 
-4. Run 
+4. At command line run 
 ```
-curl -X POST "localhost:9200/_bulk" -H "Content-Type: application/json" --data-binary @tweets.json
+curl -X POST "localhost:9200/_bulk" -H "Content-Type: application/json" --data-binary @<file_name>
 ```
+The file name will be the file output by json_to_es.py
 
 5. Open browser at [Localhost](http://localhost:9200/_cat/indices)
 
