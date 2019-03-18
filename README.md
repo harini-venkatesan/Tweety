@@ -14,16 +14,16 @@ To run Tweepy streamer:
 
 To run the web interface files, use python 3.7.1, Django 2.1.7, Elasticsearch-dsl 6.3.1, textblob 0.15.3, and folium 0.8.2.
 
-To install Django and ElasticSearch
+To install the libraries
 
 ```bash
 pip3 install Django 
 pip3 install elasticsearch-dsl
 pip3 install folium
-pip install -U textblob
+pip3 install -U textblob
 python3 -m textblob.download_corpora
 ```
-Note: Depending on the system you are using, you may need a different variation of pip3 and python3 or simply pip and python to run the installs. Make sure the versions you download are the same as the ones listed above. To view the list run ```bash pip list```
+Note: Depending on the system you are using, you may need a different variation of pip3 and python3 or simply pip and python to run the installs. Make sure the versions you download are the same as the ones listed above. To view the list run ```pip list```
 
 To run the sever: 
 
