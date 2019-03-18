@@ -11,6 +11,14 @@
         </style>
     </head>
     <body>
+        <div class="search-box">
+            <form>
+                <form method="GET" action="{% url 'main:search' %}">
+                        <input name="q" value="{{request.GET.q}}" placeholder="Search Tweets">
+                        <button type="submit"> Search </button>
+                </form>
+            </form>
+        </div>
         <div class="row" style="background-color:#ffffff">
             <div class="container">
                 <ul id="nav">

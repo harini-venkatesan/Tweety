@@ -6,8 +6,6 @@ from elasticsearch_dsl.connections import connections
 import json, re, string, xlrd
 from textblob import TextBlob
 import folium # for map
-import pandas as pd
-
 
 connections.create_connection()
 # Create your views here.
@@ -15,35 +13,26 @@ def homepage(request):
     return render(request = request, template_name = "main/home.html")
 
 def search_tweet(request):
-    template = 'main/search.html'
+    template = 'main/search.html' 
+    # connect to elasticsearch
     es = Elasticsearch(['localhost'],port=9200)
+    # check query
     if 'q' in request.GET:
         query = request.GET['q']
-        res = es.search(index="tweets", q = query, size=100)
+        # search for query in elasticsearch index
+        res = es.search(index="tweet_index", q = query, size=100)
         results = []
-        url = ''
+        # paser the list of results returned by elasticsearch
         for hit in res['hits']['hits']:
-            dic = hit["_source"]
-            dic['hash_tags'] = ''.join(dic['hash_tags'])
+            dic = hit["_source"] #get dictionary
+            dic['hash_tags'] = ''.join(dic['hash_tags']) # remove [] from tag
+            dic['score'] = hit['_score'] # get search result ranking
             # parse tweet_text to extract urls
-            # Needs refinement: if tweet text contains
-            #       more than 1 url assigns the last url
-            #       to all places where url was found
-            # Original: You're So Pretty – We're So Pretty - The Charlatans (Wonderland - 2001) https://t.co/A1QMEV05FW #TimBurgess https://t.co/ObbJO7wmST
-            # Results: You're So Pretty – We're So Pretty - The Charlatans (Wonderland - 2001) https://t.co/ObbJO7wmST #TimBurgess https://t.co/ObbJO7wmST
-            text = dic['tweet_text']
-            url = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', text)
-            for  link in url:
-                dic['tweet_text'] = re.sub(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'<a href="'+link+'"> '+link+' </a> ', text)
-            # get sentiment of tweet text
-            sentiment = TextBlob(hit['_source']['tweet_text']).polarity
-            if sentiment < -0.5:
-                dic['sentiment'] = 'Negative'
-            elif (sentiment > -0.5) & (sentiment < 0.5):
-                dic['sentiment'] = 'Neutral'
-            else:
-                dic['sentiment'] = 'Positive'
-            
+            dic['tweet_text'] = re.sub(r'http[s]?://(?:[a-zA-Z]|0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',\
+                lambda x: r'<a href="'+ re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',\
+                x.group())[0] + '"> ' + re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',\
+                x.group())[0] + '</a> ', dic['tweet_text'])
+            # add object to results list
             results.append(hit["_source"])
 
         context = {'results': results, 'query': query}
@@ -84,43 +73,45 @@ def world_wide(request):
 
 def search_sentiment(request):
     template = "main/search_sentiment.html"
+    # connect to elasticsearch
     es = Elasticsearch(['localhost'],port=9200)
-    res = es.search(index="tweets", size=110) #change to index size
-    negative = []
-    neutral = []
-    positive = []
-    url = ''
-    for hit in res['hits']['hits']:
-        # get json object - tweet
-        dic = hit["_source"] 
-        # Remove square brakets from hash_tag
-        dic['hash_tags'] = ''.join(dic['hash_tags'])
-        # parse tweet_text to extract urls
-        # Needs refinement: if tweet text contains
-        #       more than 1 url assigns the last url
-        #       to all places where url was found
-        # Original: You're So Pretty – We're So Pretty - The Charlatans (Wonderland - 2001) https://t.co/A1QMEV05FW #TimBurgess https://t.co/ObbJO7wmST
-        # Results: You're So Pretty – We're So Pretty - The Charlatans (Wonderland - 2001) https://t.co/ObbJO7wmST #TimBurgess https://t.co/ObbJO7wmST
-        text = dic['tweet_text']
-        url = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', text)
-        for  link in url:
-            dic['tweet_text'] = re.sub(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', r'<a href="'+link+'"> '+link+' </a> ', text)
-        # get sentiment of tweet text
-        sentiment = TextBlob(hit['_source']['tweet_text']).polarity
-        dic['sentiment_score'] = sentiment
-        if sentiment < -0.5:
-            dic['sentiment'] = 'Negative'
-            negative.append(hit['_source'])
-        elif (sentiment > -0.5) & (sentiment < 0.5):
-            dic['sentiment'] = 'Neutral'
-            neutral.append(hit['_source'])
-        else:
-            dic['sentiment'] = 'Positive'
-            positive.append(hit["_source"])
-    negative = sorted(negative, key=lambda k: k['sentiment_score'], reverse=True)[0:10]
-    neutral = sorted(neutral, key=lambda k: k['sentiment_score'], reverse=True)[0:10]
-    positive = sorted(positive, key=lambda k: k['sentiment_score'], reverse=True)[0:10]
-    # Get top 10 of each list
-    context = {'negative': negative, 'neutral': neutral, 'positive': positive}
+    if 'q' in request.GET:
+        query = request.GET['q']
+        # search for query in elasticsearch index
+        res = es.search(index="tweet_index", q = query, size=100)
+        negative = []
+        neutral = []
+        positive = []
+        for hit in res['hits']['hits']:
+            dic = hit["_source"]  # get tweet as dictionary
+            # Remove square brakets from hash_tag
+            dic['hash_tags'] = ''.join(dic['hash_tags'])
+            # parse tweet_text to extract urls
+            dic['tweet_text'] = re.sub(r'http[s]?://(?:[a-zA-Z]|0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',\
+                lambda x: r'<a href="'+ re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',\
+                x.group())[0] + '"> ' + re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',\
+                x.group())[0] + '</a> ', dic['tweet_text'])
+            # get sentiment of tweet text
+            sentiment = TextBlob(hit['_source']['tweet_text']).polarity
+            # Record sentiment score
+            dic['sentiment_score'] = sentiment
+            # Assign tweet to appropriate list
+            if sentiment < -0.2:
+                dic['sentiment'] = 'Negative'
+                negative.append(hit['_source'])
+            elif (sentiment > -0.21) & (sentiment < 0.2):
+                dic['sentiment'] = 'Neutral'
+                neutral.append(hit['_source'])
+            else:
+                dic['sentiment'] = 'Positive'
+                positive.append(hit["_source"])
+        # Sort lists
+        negative = sorted(negative, key=lambda k: k['sentiment_score'])[0:10]
+        neutral = sorted(neutral, key=lambda k: k['sentiment_score'])[0:10]
+        positive = sorted(positive, key=lambda k: k['sentiment_score'], reverse=True)[0:10]
+        # Get top 10 of each list
+        context = {'negative': negative, 'neutral': neutral, 'positive': positive}
 
-    return render(request=request, template_name = template, context=context)
+        return render(request=request, template_name = template, context=context)
+    else:
+        return render(request=request, template_name=template)

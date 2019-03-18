@@ -19,7 +19,6 @@ from . import views
 app_name = "main"
 urlpatterns = [
     path("", views.homepage, name="homepage"),
-   # path("search/", views.search, name="search"),
     path("search/", views.search_tweet, name="search"),
     path("worldwide/", views.world_wide, name ="worldwide" ),
     path("search_sentiment/", views.search_sentiment, name ="search_sentiment" ),

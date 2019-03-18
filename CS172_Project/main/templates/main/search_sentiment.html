@@ -21,6 +21,14 @@
         </style>
     </head>
     <body class="body" style="background-color:#b5d7f7ef">
+        <div class="search-box">
+            <form>
+                <form method="GET" action="{% url 'main:search_sentiment' %}">
+                        <input name="q" value="{{request.GET.q}}" placeholder="Search Tweets">
+                        <button type="submit"> Search </button>
+                </form>
+            </form>
+        </div>
             <div class="row" style="background-color:#ffffff">
                 <div class="container">
                     <ul id="nav">
@@ -41,6 +49,7 @@
                                 <p><a href="#" >#{{n.hash_tags}} </a></p>
                                 {% if n.Location != None %}
                                     <p>{{n.Location}}</p>
+                                <p> Sentiment Score: {{n.sentiment_score}}</p>
                                 {% endif %}
                             </div> 
                         {% endfor %}
@@ -55,6 +64,7 @@
                                 {% if nl.Location != None %}
                                     <p>{{nl.Location}}</p>
                                 {% endif %}
+                                <p> Sentiment Score: {{nl.sentiment_score}}</p>
                             </div> 
                         {% endfor %}
                     </div>
@@ -68,8 +78,9 @@
                                 {% if p.Location != None %}
                                     <p>{{p.Location}}</p>
                                 {% endif %}
+                                <p> Sentiment Score: {{p.sentiment_score}}</p>
                             </div> 
-                        {% endfor %}}
+                        {% endfor %}
                     </div>
                 {% endblock %}
             </div>
