@@ -21,6 +21,7 @@ pip3 install Django
 pip3 install elasticsearch-dsl
 pip3 install folium
 pip3 install -U textblob
+pip3 install xlrd
 python3 -m textblob.download_corpora
 ```
 Note: Depending on the system you are using, you may need a different variation of pip3 and python3 or simply pip and python to run the installs. Make sure the versions you download are the same as the ones listed above. To view the list run ```pip list```
