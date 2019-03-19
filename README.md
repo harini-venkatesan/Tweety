@@ -60,7 +60,8 @@ There are multiple ways to run ElasticSeach, however it must always remain runni
 bin/elasticsearch
 ``` 
 
-4. At command line, navigate to the [main directory](https://github.com/CS172-UCR/finalproject-tweety and run 
+4. At command line, navigate to the (main directory)[https://github.com/CS172-UCR/finalproject-tweety and run]
+
 ```
 curl -X POST "localhost:9200/_bulk" -H "Content-Type: application/json" --data-binary @tweet_index.json
 ```
