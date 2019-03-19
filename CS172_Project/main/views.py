@@ -20,7 +20,7 @@ def search_tweet(request):
     if 'q' in request.GET:
         query = request.GET['q']
         # search for query in elasticsearch index
-        res = es.search(index="tweet_index", q = query, size=100)
+        res = es.search(index="tweet-index", q = query, size=100)
         results = []
         # paser the list of results returned by elasticsearch
         for hit in res['hits']['hits']:
@@ -55,7 +55,7 @@ def world_wide(request):
     if 'q' in request.GET:
         query = request.GET['q']
         # search for query in elasticsearch index
-        res = es.search(index="tweet_index", q = query, size=1000)
+        res = es.search(index="tweet-index", q = query, size=1000)
         # paser the list of results returned by elasticsearch
         for hit in res['hits']['hits']:
             dic = hit["_source"] #get dictionary
@@ -80,7 +80,7 @@ def search_sentiment(request):
     if 'q' in request.GET:
         query = request.GET['q']
         # search for query in elasticsearch index
-        res = es.search(index="tweet_index", q = query, size=100)
+        res = es.search(index="tweet-index", q = query, size=100)
         negative = []
         neutral = []
         positive = []
