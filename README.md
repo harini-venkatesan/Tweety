@@ -62,7 +62,7 @@ bin/elasticsearch
 
 4. At command line run 
 ```
-curl -X POST "localhost:9200/_bulk" -H "Content-Type: application/json" --data-binary @<file_name>
+curl -X POST "localhost:9200/_bulk" -H "Content-Type: application/json" --data-binary @tweet_index.json
 ```
 The file name will be the file output by json_to_es.py
 
