@@ -42,32 +42,34 @@ def search_tweet(request):
 
 def world_wide(request):
     template = "main/worldwide.html"
-
+    # connect to elasticsearch
+    es = Elasticsearch(['localhost'],port=9200)
     # Open xlsx file
     loc = ("worldcities.xlsx") 
     wb = xlrd.open_workbook(loc) 
     sheet = wb.sheet_by_index(0) 
     sheet.cell_value(0, 0) 
 
-    Location = []
-    for line in open('CS_data.json', 'r'):
-        Location.append(json.loads(line))
-
-    clear_location = []
     m = folium.Map(location=[20, 0], tiles="Mapbox Bright", zoom_start=3)
-
-    for i in range (0, len(Location)):
-        if Location[i]['Location'] != None:
-            location = Location[i]['Location']
-            clear_location = location.split()
-            for row_num in range(sheet.nrows):
-                    row_value = sheet.row_values(row_num)
-                    if row_value[1] == clear_location[0]:
-                            lat = row_value[2]
-                            lon = row_value[3]
-                            tweet_text = Location[i]['tweet_text']
-                            username = Location[i]['user_name']
-                            folium.Marker([lat, lon], "%s: %s "%(tweet_text,username)).add_to(m)
+    # check query
+    if 'q' in request.GET:
+        query = request.GET['q']
+        # search for query in elasticsearch index
+        res = es.search(index="tweet_index", q = query, size=1000)
+        # paser the list of results returned by elasticsearch
+        for hit in res['hits']['hits']:
+            dic = hit["_source"] #get dictionary
+            if dic['Location'] != None:
+                location = dic['Location']
+                clear_location = location.split()
+                for row_num in range(sheet.nrows):
+                        row_value = sheet.row_values(row_num)
+                        if row_value[1] == clear_location[0]:
+                                lat = row_value[2]
+                                lon = row_value[3]
+                                tweet_text = dic['tweet_text']
+                                username = dic['user_name']
+                                folium.Marker([lat, lon], "%s: %s "%(tweet_text,username)).add_to(m)
     context = {'m': m._repr_html_()}
     return  render(request, template_name = template, context=context)
 
